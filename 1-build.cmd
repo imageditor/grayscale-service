@@ -1,0 +1,1 @@
+docker build -t grayscaler ./grayscaling && docker tag grayscaler 126720073631.dkr.ecr.us-west-2.amazonaws.com/grayscaler

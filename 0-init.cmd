@@ -1,0 +1,1 @@
+aws ecr create-repository --repository-name grayscaler --region us-west-2 && aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin 126720073631.dkr.ecr.us-west-2.amazonaws.com

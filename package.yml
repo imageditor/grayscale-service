@@ -1,0 +1,57 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: 'python3.8
+
+  Sample SAM Template for image-grayscale
+
+  '
+Globals:
+  Function:
+    Timeout: 3
+Resources:
+  GrayscalingFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      PackageType: Image
+      ImageUri: 126720073631.dkr.ecr.us-west-2.amazonaws.com/grayscaler:latest
+      Policies:
+      - S3CrudPolicy:
+          BucketName:
+            Ref: destBucket
+      Events:
+        Grayscaling:
+          Type: Api
+          Properties:
+            Path: /
+            Method: post
+      Environment:
+        Variables:
+          BUCKET_NAME:
+            Ref: destBucket
+          RESULT_HANDLER_URL: https://webhook.site/77601984-54f2-4307-a720-99d8a19dfa7c
+    Metadata:
+      Dockerfile: Dockerfile
+      DockerContext: ./grayscaling
+      DockerTag: python3.8-v1
+Outputs:
+  GrayscalingFunctionApi:
+    Description: API Gateway endpoint URL for Prod stage for Grayscaling function
+    Value:
+      Fn::Sub: https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/grayscaler/
+  GrayscalingFunctionFunction:
+    Description: Hello World Lambda Function ARN
+    Value:
+      Fn::GetAtt:
+      - GrayscalingFunction
+      - Arn
+  GrayscalingFunctionIamRole:
+    Description: Implicit IAM Role created for Hello World function
+    Value:
+      Fn::GetAtt:
+      - GrayscalingFunctionRole
+      - Arn
+Parameters:
+  destBucket:
+    Type: String
+    Description: Name of the S3 Bucket to put uploaded files into (must exist prior
+      to deployment)
